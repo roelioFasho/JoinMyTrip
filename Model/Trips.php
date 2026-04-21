@@ -8,15 +8,16 @@ class Trip {
     private $destination;
     private $itinerary;
     private $cost;
+    private $tripPhoto; 
 
-   
     public function __construct(
         $tripId = null,
         $tripName = null,
         $time = null,
         $destination = null,
         $itinerary = null,
-        $cost = null
+        $cost = null,
+        $tripPhoto = null 
     ) {
         $this->tripId = $tripId;
         $this->tripName = $tripName;
@@ -24,8 +25,8 @@ class Trip {
         $this->destination = $destination;
         $this->itinerary = $itinerary;
         $this->cost = $cost;
+        $this->tripPhoto = $tripPhoto; 
     }
-
 
     public function getTripId() {
         return $this->tripId;
@@ -75,6 +76,16 @@ class Trip {
         $this->cost = $cost;
     }
 
+    
+    public function getTripPhoto() {
+        return $this->tripPhoto;
+    }
+
+    
+    public function setTripPhoto($tripPhoto) {
+        $this->tripPhoto = $tripPhoto;
+    }
+
     public function __toString() {
         return "Trip{" .
             "tripId=" . $this->tripId .
@@ -83,6 +94,7 @@ class Trip {
             ", destination='" . $this->destination . "'" .
             ", itinerary='" . $this->itinerary . "'" .
             ", cost=" . $this->cost .
+            ", tripPhoto='" . $this->tripPhoto . "'" . 
             "}";
     }
 }
