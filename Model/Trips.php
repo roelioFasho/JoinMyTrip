@@ -9,7 +9,7 @@ class Trip {
     private $itinerary;
     private $cost;
 
-    // Default constructor
+   
     public function __construct(
         $tripId = null,
         $tripName = null,
@@ -26,7 +26,6 @@ class Trip {
         $this->cost = $cost;
     }
 
-    // Getters and Setters
 
     public function getTripId() {
         return $this->tripId;
@@ -76,7 +75,6 @@ class Trip {
         $this->cost = $cost;
     }
 
-    // toString equivalent in PHP
     public function __toString() {
         return "Trip{" .
             "tripId=" . $this->tripId .
