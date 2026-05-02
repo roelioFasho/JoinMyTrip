@@ -1,68 +1,102 @@
 <?php
-    class TripChat {
-    private $TripChatId;
-    private $tripId;   // lidhje me Trip
-    private $name;
-    private $members;   // array me user IDs (vetëm për logjikë, jo DB)
 
-    public function __construct($data = []) {
-        $this->TripChatId = $data['id'] ?? null;
-        $this->tripId = $data['trip_id'] ?? null;
-        $this->name = $data['name'] ?? '';
-        $this->members = $data['members'] ?? [];
-    }
+class Trip {
 
-    public function getId() {
-        return $this->TripChatId;
+    private $tripId;
+    private $tripName;
+    private $time;
+    private $destination;
+    private $itinerary;
+    private $cost;
+    private $tripPhoto; 
+
+    public function __construct(
+        $tripId = null,
+        $tripName = null,
+        $time = null,
+        $destination = null,
+        $itinerary = null,
+        $cost = null,
+        $tripPhoto = null 
+    ) {
+        $this->tripId = $tripId;
+        $this->tripName = $tripName;
+        $this->time = $time;
+        $this->destination = $destination;
+        $this->itinerary = $itinerary;
+        $this->cost = $cost;
+        $this->tripPhoto = $tripPhoto; 
     }
 
     public function getTripId() {
         return $this->tripId;
     }
 
-    public function getName() {
-        return $this->name;
+    public function setTripId($tripId) {
+        $this->tripId = $tripId;
     }
 
-    public function getMembers() {
-        return $this->members;
+    public function getTripName() {
+        return $this->tripName;
     }
 
-    // SETTERS
-    public function setId($id) {
-        $this->TripChatId = $id;
+    public function setTripName($tripName) {
+        $this->tripName = $tripName;
     }
 
-    public function setTripId($trip_id) {
-        $this->tripId = $trip_id;
+    public function getTime() {
+        return $this->time;
     }
 
-    public function setName($name) {
-        $this->name = $name;
+    public function setTime($time) {
+        $this->time = $time;
     }
 
-    public function setMembers($members) {
-        if (is_array($members)) {
-            $this->members = $members;
-        }
+    public function getDestination() {
+        return $this->destination;
     }
 
-
-    public function addMember($userId) {
-        if (!in_array($userId, $this->members)) {
-            $this->members[] = $userId;
-        }
+    public function setDestination($destination) {
+        $this->destination = $destination;
     }
 
-    public function removeMember($userId) {
-        $this->members = array_filter(
-            $this->members,
-            fn($member) => $member != $userId
-        );
+    public function getItinerary() {
+        return $this->itinerary;
     }
 
-    public function hasMember($userId) {
-        return in_array($userId, $this->members);
+    public function setItinerary($itinerary) {
+        $this->itinerary = $itinerary;
+    }
+
+    public function getCost() {
+        return $this->cost;
+    }
+
+    public function setCost($cost) {
+        $this->cost = $cost;
+    }
+
+    
+    public function getTripPhoto() {
+        return $this->tripPhoto;
+    }
+
+    
+    public function setTripPhoto($tripPhoto) {
+        $this->tripPhoto = $tripPhoto;
+    }
+
+    public function __toString() {
+        return "Trip{" .
+            "tripId=" . $this->tripId .
+            ", tripName='" . $this->tripName . "'" .
+            ", time='" . $this->time . "'" .
+            ", destination='" . $this->destination . "'" .
+            ", itinerary='" . $this->itinerary . "'" .
+            ", cost=" . $this->cost .
+            ", tripPhoto='" . $this->tripPhoto . "'" . 
+            "}";
     }
 }
+
 ?>
