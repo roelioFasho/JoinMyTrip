@@ -1,23 +1,11 @@
 <?php
-session_start();
-
 $message = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST["username"]);
-    $password = trim($_POST["password"]);
-
-    if (empty($username) || empty($password)) {
+if (isset($_GET["error"])) {
+    if ($_GET["error"] == "empty") {
         $message = "Please fill in all fields.";
-    } else {
-        // Example login check (replace with database later)
-        if ($username === "admin" && $password === "1234") {
-            $_SESSION["user"] = $username;
-            header("Location: dashboard.php");
-            exit();
-        } else {
-            $message = "Invalid username or password.";
-        }
+    } elseif ($_GET["error"] == "invalid") {
+        $message = "Invalid username or password.";
     }
 }
 ?>
@@ -25,13 +13,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Company Login</title>
+    <title>User Login</title>
     <style>
-        
         html, body {
-    height: 100%;
-    margin: 0;
-}
+            height: 100%;
+            margin: 0;
+        }
 
         body {
             min-height: 100vh;
@@ -102,9 +89,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
 <div class="container">
-    <h1>My Company</h1>
+    <h1>User Login</h1>
 
-    <form method="POST">
+    
+    <form method="POST" action="../Controller/AuthController.php">
         <label>Username</label>
         <input type="text" name="username">
 
