@@ -3,8 +3,6 @@ class User {
     private $userId;
     private $name;
     private $age;
-    private $trips;
-    private $friends;
     private $email;
     private $password;
 
@@ -12,8 +10,6 @@ class User {
         $this->userId = $data['id'] ?? null;
         $this->name = $data['name'] ?? '';
         $this->age = $data['age'] ?? null;
-        $this->trips = $data['trips'] ?? [];
-        $this->friends = $data['friends'] ?? [];
         $this->email = $data['email'] ?? '';
         $this->password = $data['password'] ?? '';
     }
@@ -40,26 +36,6 @@ class User {
 
     public function setAge($age) {
         $this->age = $age;
-    }
-
-    public function getTrips() {
-        return $this->trips;
-    }
-
-    public function setTrips($trips) {
-        if (is_array($trips)) {
-            $this->trips = $trips;
-        }
-    }
-
-    public function getFriends() {
-        return $this->friends;
-    }
-
-    public function setFriends($friends) {
-        if (is_array($friends)) {
-            $this->friends = $friends;
-        }
     }
 
     public function getEmail() {
