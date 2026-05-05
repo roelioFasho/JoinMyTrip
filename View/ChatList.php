@@ -1,8 +1,13 @@
+<?php
+$chats = $chats ?? [];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Chats</title>
+
 <style>
 body {
     margin: 0;
@@ -75,45 +80,46 @@ body {
 }
 </style>
 </head>
+
 <body>
 
 <div class="header">Chats</div>
 
 <div class="chat-list">
 
-    <div class="chat-item">
-        <div class="avatar"></div>
-        <div class="chat-info">
-            <div class="chat-name">Trip to Paris 🇫🇷</div>
-            <div class="chat-last">Ardi: Can't wait for tomorrow!</div>
-        </div>
-        <div class="chat-meta">
-            2h
-            <div class="unread">3</div>
-        </div>
-    </div>
+<?php foreach ($chats as $chat): ?>
 
-    <div class="chat-item">
-        <div class="avatar"></div>
-        <div class="chat-info">
-            <div class="chat-name">Rome Adventure 🇮🇹</div>
-            <div class="chat-last">You: Booked the hotel</div>
-        </div>
-        <div class="chat-meta">
-            1d
-        </div>
-    </div>
+    <a href="index.php?chatId=<?= $chat['id'] ?>" style="text-decoration:none; color:inherit;">
 
-    <div class="chat-item">
-        <div class="avatar"></div>
-        <div class="chat-info">
-            <div class="chat-name">Berlin Trip 🇩🇪</div>
-            <div class="chat-last">Sara: Museum plan?</div>
+        <div class="chat-item">
+
+            <div class="avatar"></div>
+
+            <div class="chat-info">
+                <div class="chat-name">
+                    <?= htmlspecialchars($chat['name']) ?>
+                </div>
+
+                <div class="chat-last">
+                    <?= htmlspecialchars($chat['last_message'] ?? 'No messages yet') ?>
+                </div>
+            </div>
+
+            <div class="chat-meta">
+                <?= $chat['time'] ?? '' ?>
+
+                <?php if (!empty($chat['unread'])): ?>
+                    <div class="unread">
+                        <?= $chat['unread'] ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
         </div>
-        <div class="chat-meta">
-            3d
-        </div>
-    </div>
+
+    </a>
+
+<?php endforeach; ?>
 
 </div>
 
