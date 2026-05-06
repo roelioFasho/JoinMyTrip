@@ -8,18 +8,19 @@ class TripRepository {
 
     public function insertTrip($trip) {
         $sql = "INSERT INTO Trips 
-        (trip_name, time, destination, itinerary, cost, trip_photo) 
-        VALUES (?, ?, ?, ?, ?, ?)";
+        (trip_name, departure, return_date, destination, itinerary, cost, image) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
             $trip->getTripName(),
-            $trip->getTime(),
+            $trip->getDeparture(),
+            $trip->getReturnDate(),
             $trip->getDestination(),
             $trip->getItinerary(),
             $trip->getCost(),
-            $trip->getTripPhoto()
+            $trip->getImage()
         ]);
     }
 
