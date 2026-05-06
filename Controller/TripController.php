@@ -1,5 +1,5 @@
 <?php
-require_once "../Model/Trip.php";
+require_once "../Model/tripModel.php";
 require_once "../Database/db.php";
 require_once "../Database/TripRepository.php";
 
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $repo = new TripRepository($conn);
     $repo->insertTrip($trip);
 
-    header("Location: ../View/list_trips.php");
+    header("Location: ../View/UploadTripsView.php");
     exit();
 }
 ?>
