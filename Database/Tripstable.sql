@@ -5,5 +5,8 @@ CREATE TABLE Trips (
     destination VARCHAR(100),
     itinerary TEXT,
     cost DECIMAL(10,2),
-    trip_photo VARCHAR(255)
+    departure DATETIME,
+    return_date DATETIME,
+    category VARCHAR(100),
+    image VARCHAR(255)
 );
