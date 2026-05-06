@@ -651,12 +651,17 @@
     btn.disabled = true;
     btn.textContent = 'Submitting...';
 
+   if (result.status === "success") {
+    showToast("Trip added successfully!");
 
     setTimeout(() => {
-      showToast('Trip "' + name + '" added successfully!');
-      btn.disabled = false;
-      btn.textContent = 'Add trip →';
-    }, 1200);
+    window.location.href = "Showtrips.php";
+     }, 800);
+   } else {
+    showToast("Error adding trip: " + result.message);
+    btn.disabled = false;
+    btn.textContent = 'Add trip →';
+   }
   }
 </script>
 
