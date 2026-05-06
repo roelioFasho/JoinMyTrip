@@ -1,102 +1,39 @@
 <?php
+require_once "Database.php";
 
-class Trip {
+function addTrip($data) {
+    global $conn;
 
-    private $tripId;
-    private $tripName;
-    private $time;
-    private $destination;
-    private $itinerary;
-    private $cost;
-    private $tripPhoto; 
+    $stmt = $conn->prepare("
+        INSERT INTO Trips 
+        (trip_name, departure, return_date, destination, itinerary, cost, category, image)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
 
-    public function __construct(
-        $tripId = null,
-        $tripName = null,
-        $time = null,
-        $destination = null,
-        $itinerary = null,
-        $cost = null,
-        $tripPhoto = null 
-    ) {
-        $this->tripId = $tripId;
-        $this->tripName = $tripName;
-        $this->time = $time;
-        $this->destination = $destination;
-        $this->itinerary = $itinerary;
-        $this->cost = $cost;
-        $this->tripPhoto = $tripPhoto; 
-    }
+    if (!$stmt) return false;
 
-    public function getTripId() {
-        return $this->tripId;
-    }
-
-    public function setTripId($tripId) {
-        $this->tripId = $tripId;
-    }
-
-    public function getTripName() {
-        return $this->tripName;
-    }
-
-    public function setTripName($tripName) {
-        $this->tripName = $tripName;
-    }
-
-    public function getTime() {
-        return $this->time;
-    }
-
-    public function setTime($time) {
-        $this->time = $time;
-    }
-
-    public function getDestination() {
-        return $this->destination;
-    }
-
-    public function setDestination($destination) {
-        $this->destination = $destination;
-    }
-
-    public function getItinerary() {
-        return $this->itinerary;
-    }
-
-    public function setItinerary($itinerary) {
-        $this->itinerary = $itinerary;
-    }
-
-    public function getCost() {
-        return $this->cost;
-    }
-
-    public function setCost($cost) {
-        $this->cost = $cost;
-    }
-
-    
-    public function getTripPhoto() {
-        return $this->tripPhoto;
-    }
-
-    
-    public function setTripPhoto($tripPhoto) {
-        $this->tripPhoto = $tripPhoto;
-    }
-
-    public function __toString() {
-        return "Trip{" .
-            "tripId=" . $this->tripId .
-            ", tripName='" . $this->tripName . "'" .
-            ", time='" . $this->time . "'" .
-            ", destination='" . $this->destination . "'" .
-            ", itinerary='" . $this->itinerary . "'" .
-            ", cost=" . $this->cost .
-            ", tripPhoto='" . $this->tripPhoto . "'" . 
-            "}";
-    }
+    return $stmt->execute([
+        $data['trip_name'],
+        $data['departure'],
+        $data['return_date'],
+        $data['destination'],
+        $data['itinerary'],
+        $data['cost'],
+        $data['category'],
+        $data['image']
+    ]);
 }
 
+function getAllTrips() {
+    global $conn;
+
+    $result = $conn->query("SELECT * FROM Trips ORDER BY trip_id DESC");
+
+    $trips = [];
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        $trips[] = $row;
+    }
+
+    return $trips;
+}
 ?>
