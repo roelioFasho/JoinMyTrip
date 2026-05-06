@@ -11,6 +11,7 @@ class TripRepository {
         (trip_name, departure, return_date, destination, itinerary, cost, image) 
         VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+
         $stmt = $this->conn->prepare($sql);
 
         $stmt->execute([
