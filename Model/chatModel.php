@@ -61,7 +61,7 @@ class TripChat {
         $stmt = $this->conn->prepare("
             SELECT m.message, u.name
             FROM messages m
-            JOIN users u ON m.user_id = u.id
+            JOIN Users u ON m.user_id = u.user_id
             WHERE m.chat_id = ?
             ORDER BY m.created_at ASC
         ");
@@ -79,16 +79,18 @@ class TripChat {
     }
 
     public static function getUserChats($userId) {
-        global $conn;
 
-        $stmt = $conn->prepare("
-            SELECT tc.*
-            FROM trip_chats tc
-            JOIN trip_chat_members tm ON tc.id = tm.chat_id
-            WHERE tm.user_id = ?
-        ");
-        $stmt->execute([$userId]);
+    require "Database/tripsDB.php";
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $stmt = $conn->prepare("
+        SELECT tc.*
+        FROM trip_chats tc
+        JOIN trip_chat_members tm ON tc.id = tm.chat_id
+        WHERE tm.user_id = ?
+    ");
+
+    $stmt->execute([$userId]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

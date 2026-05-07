@@ -5,14 +5,16 @@ class ChatController {
 
     public function showChats($userId) {
 
-        $chats = TripChat::getUserChats($userId);
+    $chats = TripChat::getUserChats($userId);
 
-        if (!$chats) {
-            $chats = [];
-        }
-
-        include "View/ChatList.php";
+    if (!$chats) {
+        $chats = [];
     }
+
+    include "View/ChatList.php";
+}
+
+
 
     public function openChat($chatId) {
 
