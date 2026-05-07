@@ -1,11 +1,12 @@
 <?php
+    
 $conn = new mysqli("localhost", "root", "1234", "projekti");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$message = "";
+$message= "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -71,7 +72,7 @@ $conn->close();
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background-color: #f0f4f2;
+      background-color: #def4e9;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -416,6 +417,7 @@ $conn->close();
 </head>
 
 <body>
+<?php if (!empty($message)) echo "<p style='text-align:center; color:green;'>$message</p>"; ?>
 <form id="tripForm" method="POST" enctype="multipart/form-data">
 <div class="card">
   <div class="card-header">
