@@ -1,0 +1,711 @@
+<?php
+$conn = new mysqli("localhost", "root", "1234", "projekti");
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$message = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $trip_name   = $_POST["trip_name"];
+    $departure   = $_POST["departure"];
+    $return_date = $_POST["return_date"];
+    $destination = $_POST["destination"];
+    $itinerary   = $_POST["itinerary"];
+    $cost        = $_POST["cost"];
+    $category    = $_POST["category"];
+
+    $imageName = null;
+
+    if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] == 0) {
+        $folder = "uploads/";
+        if (!is_dir($folder)) {
+            mkdir($folder);
+        }
+
+        $imageName = time() . "_" . basename($_FILES["trip_image"]["name"]);
+        move_uploaded_file($_FILES["trip_image"]["tmp_name"], $folder . $imageName);
+    }
+
+    $stmt = $conn->prepare("
+        INSERT INTO Trips
+        (trip_name, departure, return_date, destination, itinerary, cost, category, image)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+
+    $stmt->bind_param(
+        "sssssdss",
+        $trip_name,
+        $departure,
+        $return_date,
+        $destination,
+        $itinerary,
+        $cost,
+        $category,
+        $imageName
+    );
+
+    if ($stmt->execute()) {
+        $message = "Trip added successfully!";
+    } else {
+        $message = "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Trip</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #f0f4f2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 0.5px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+
+    .icon-plane {
+      width: 36px; height: 36px;
+      background: #E1F5EE;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+
+    .card-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: #111;
+    }
+
+
+    .step-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1.75rem;
+    }
+
+    .step-seg {
+      flex: 1;
+      height: 3px;
+      border-radius: 99px;
+      background: #e0e0e0;
+      transition: background 0.3s;
+    }
+
+    .step-seg.active { background: #1D9E75; }
+
+
+    .field { margin-bottom: 1.1rem; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #666;
+      margin-bottom: 5px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    input[type=text],
+    input[type=datetime-local],
+    input[type=number],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 0.5px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+      color: #111;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #1D9E75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    .error-msg {
+      font-size: 12px;
+      color: #E24B4A;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+
+    .char-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .char-bar-wrap {
+      flex: 1;
+      height: 3px;
+      background: #e0e0e0;
+      border-radius: 99px;
+      margin-right: 8px;
+      overflow: hidden;
+    }
+
+    .char-bar {
+      height: 100%;
+      width: 0%;
+      background: #1D9E75;
+      border-radius: 99px;
+      transition: width 0.2s, background 0.2s;
+    }
+
+    .char-bar.warn { background: #BA7517; }
+    .char-bar.over  { background: #E24B4A; }
+
+    .word-counter {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .cost-preview {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .cost-preview.show { display: flex; }
+
+    .cost-amount {
+      font-weight: 500;
+      font-size: 15px;
+      color: #111;
+    }
+
+
+    .budget-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .budget-tag {
+      padding: 4px 10px;
+      border-radius: 99px;
+      border: 0.5px solid #ccc;
+      font-size: 12px;
+      cursor: pointer;
+      color: #555;
+      background: #fff;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .budget-tag:hover, .budget-tag.active {
+      background: #E1F5EE;
+      border-color: #1D9E75;
+      color: #0F6E56;
+    }
+
+
+    .tags-wrap {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .tag-chip {
+      padding: 4px 10px;
+      border-radius: 99px;
+      border: 0.5px solid #ccc;
+      font-size: 12px;
+      cursor: pointer;
+      color: #555;
+      background: #fff;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .tag-chip:hover { border-color: #1D9E75; color: #0F6E56; }
+
+    .tag-chip.selected {
+      background: #E1F5EE;
+      border-color: #1D9E75;
+      color: #085041;
+      font-weight: 500;
+    }
+
+
+    .drop-zone {
+      border: 1.5px dashed #ccc;
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: #1D9E75;
+      background: #E1F5EE;
+    }
+
+    .drop-zone input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+      box-shadow: none;
+    }
+
+    .drop-icon { font-size: 24px; margin-bottom: 6px; }
+    .drop-label { font-size: 13px; color: #888; }
+
+
+    #preview-wrap {
+      margin-top: 10px;
+      position: relative;
+      display: none;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 0.5px solid #e0e0e0;
+    }
+
+    #preview-wrap img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .preview-remove {
+      position: absolute;
+      top: 6px; right: 6px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+      .row2 input {
+       width: 100%;
+       min-width: 0;
+       font-size: 13px;
+       padding: 9px 10px;
+    }
+
+      .row2 .field {
+      margin-bottom: 1.1rem;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 0.5px solid #e8e8e8;
+      margin: 1.5rem 0;
+    }
+
+
+    .submit-btn {
+      width: 100%;
+      padding: 11px;
+      background: #1D9E75;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 1.25rem;
+    }
+
+    .submit-btn:hover { background: #0F6E56; }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: #9FE1CB; cursor: not-allowed; }
+
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #085041;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+
+    .field-valid input,
+    .field-valid textarea {
+      border-color: #1D9E75;
+    }
+
+    .required-star { color: #E24B4A; }
+  </style>
+</head>
+
+<body>
+<form id="tripForm" method="POST" enctype="multipart/form-data">
+<div class="card">
+  <div class="card-header">
+    <div class="icon-plane">✈</div>
+    <h2>Add a trip</h2>
+  </div>
+
+
+  <div class="step-bar">
+    <div class="step-seg" id="seg1"></div>
+    <div class="step-seg" id="seg2"></div>
+    <div class="step-seg" id="seg3"></div>
+  </div>
+
+
+  <div class="field">
+    <label>Trip name <span class="required-star">*</span></label>
+    <input type="text" id="trip_name" name="trip_name" placeholder="e.g. Weekend in Tirana" autocomplete="off">
+    <div class="error-msg" id="nameError">Name must be at least 3 characters.</div>
+  </div>
+
+
+  <div class="row2">
+    <div class="field">
+      <label>Departure</label>
+      <input type="datetime-local" id="departure" name="departure">
+    </div>
+    <div class="field">
+      <label>Return</label>
+      <input type="datetime-local" id="return_date" name="return_date">
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label>Destination</label>
+    <input type="text" id="destination" name="destination" placeholder="City, country..." autocomplete="off">
+    <div class="tags-wrap" id="dest-suggestions"></div>
+  </div>
+
+
+  <div class="field">
+    <label>Category</label>
+    <div class="tags-wrap" id="category-tags">
+      <span class="tag-chip" onclick="toggleCategory(this, 'Adventure')">🏕 Adventure</span>
+      <span class="tag-chip" onclick="toggleCategory(this, 'Beach')">🏖 Beach</span>
+      <span class="tag-chip" onclick="toggleCategory(this, 'City')">🏙 City</span>
+      <span class="tag-chip" onclick="toggleCategory(this, 'Culture')">🏛 Culture</span>
+      <span class="tag-chip" onclick="toggleCategory(this, 'Food')">🍽 Food</span>
+      <span class="tag-chip" onclick="toggleCategory(this, 'Road trip')">🚗 Road trip</span>
+    </div>
+    <input type="hidden" id="category_val" name="category">
+  </div>
+
+  <hr class="section-divider">
+
+
+  <div class="field">
+    <label>Itinerary</label>
+    <textarea id="itinerary" name="itinerary" placeholder="Day 1: Arrive, check in... Day 2: ..." oninput="updateCharCount()" maxlength="200"></textarea>
+    <div class="char-row">
+      <div class="char-bar-wrap"><div class="char-bar" id="charBar"></div></div>
+      <span class="word-counter" id="charCount">0 / 200</span>
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label>Cost (€)</label>
+    <input type="number" id="cost" name="cost" step="0.01" min="0" placeholder="0.00" oninput="updateCostPreview()">
+    <div class="budget-tags">
+      <span class="budget-tag" onclick="applyBudget(this, 150)">Budget (&lt;€150)</span>
+      <span class="budget-tag" onclick="applyBudget(this, 500)">Mid (€500)</span>
+      <span class="budget-tag" onclick="applyBudget(this, 1500)">Comfort (€1,500)</span>
+      <span class="budget-tag" onclick="applyBudget(this, 5000)">Luxury (€5,000+)</span>
+    </div>
+    <div class="cost-preview" id="costPreview">
+      <span>Estimated cost:</span>
+      <span class="cost-amount" id="costAmount"></span>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <div class="field">
+    <label>Trip photo</label>
+    <div class="drop-zone" id="dropZone"
+         ondragover="handleDragOver(event)"
+         ondragleave="handleDragLeave(event)"
+         ondrop="handleDrop(event)">
+      <input type="file" id="trip_image" name="trip_image" accept="image/*" onchange="previewImage(this)">
+      <div class="drop-icon">📷</div>
+      <div class="drop-label" id="dropLabel">Click or drag an image here</div>
+    </div>
+    <div id="preview-wrap">
+      <img id="preview" alt="Trip preview">
+      <button class="preview-remove" onclick="removeImage()" title="Remove">✕</button>
+    </div>
+  </div>
+   <button class="submit-btn" id="submitBtn" type="submit">
+  Add trip →
+  </button>
+  </div>
+
+
+<div class="toast" id="toast"></div>
+</form>
+
+<script>
+  const MAX_CHARS = 200;
+  let selectedCategories = [];
+
+  const DEST_SUGGESTIONS = [
+    "Tirana, Albania", "Dubai, United Arab Emirates", "Bali, Indonesia", "Barcelona, Spain",
+    "Cappadocia, Turkey", "Dubrovnik, Croatia", "Lisbon, Portugal",
+    "Mykonos, Greece", "Paris, France", "Prague, Czech Republic", "Santorini, Greece"
+  ];
+
+
+  document.getElementById('trip_name').addEventListener('input', function () {
+    updateStepBar();
+    const err = document.getElementById('nameError');
+    if (this.value.trim().length >= 3) {
+      err.classList.remove('show');
+      this.parentElement.classList.add('field-valid');
+    } else {
+      this.parentElement.classList.remove('field-valid');
+    }
+  });
+
+
+  document.getElementById('destination').addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    const wrap = document.getElementById('dest-suggestions');
+    wrap.innerHTML = '';
+    if (!q) return;
+    const matches = DEST_SUGGESTIONS.filter(d => d.toLowerCase().includes(q)).slice(0, 4);
+    matches.forEach(m => {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.textContent = m;
+      chip.onclick = () => {
+        document.getElementById('destination').value = m;
+        wrap.innerHTML = '';
+        updateStepBar();
+        showToast('Destination set: ' + m);
+      };
+      wrap.appendChild(chip);
+    });
+  });
+
+
+  document.getElementById('departure').addEventListener('change', updateStepBar);
+
+  document.getElementById('return_date').addEventListener('change', function () {
+    const dep = document.getElementById('departure').value;
+    const ret = this.value;
+    if (dep && ret && ret < dep) {
+      showToast('Return date is before departure!');
+      this.style.borderColor = '#E24B4A';
+    } else {
+      this.style.borderColor = '';
+      updateStepBar();
+    }
+  });
+
+
+  function updateStepBar() {
+    const name = document.getElementById('trip_name').value.trim().length >= 3;
+    const dest = document.getElementById('destination').value.trim().length > 0;
+    const dep  = document.getElementById('departure').value;
+    document.getElementById('seg1').classList.toggle('active', name);
+    document.getElementById('seg2').classList.toggle('active', name && dest);
+    document.getElementById('seg3').classList.toggle('active', name && dest && !!dep);
+  }
+
+ 
+  function toggleCategory(el, cat) {
+    const idx = selectedCategories.indexOf(cat);
+    if (idx > -1) {
+      selectedCategories.splice(idx, 1);
+      el.classList.remove('selected');
+    } else {
+      selectedCategories.push(cat);
+      el.classList.add('selected');
+    }
+    document.getElementById('category_val').value = selectedCategories.join(', ');
+  }
+
+
+  function updateCharCount() {
+    const val = document.getElementById('itinerary').value;
+    const len = val.length;
+    const pct = (len / MAX_CHARS) * 100;
+    const bar = document.getElementById('charBar');
+    bar.style.width = Math.min(pct, 100) + '%';
+    bar.className = 'char-bar' + (pct >= 100 ? ' over' : pct >= 80 ? ' warn' : '');
+    document.getElementById('charCount').textContent = len + ' / ' + MAX_CHARS;
+  }
+
+
+  function updateCostPreview() {
+    const val = parseFloat(document.getElementById('cost').value);
+    const preview = document.getElementById('costPreview');
+    const amount  = document.getElementById('costAmount');
+    document.querySelectorAll('.budget-tag').forEach(t => t.classList.remove('active'));
+    if (!isNaN(val) && val >= 0) {
+      preview.classList.add('show');
+      amount.textContent = '€' + val.toLocaleString('en-EU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } else {
+      preview.classList.remove('show');
+    }
+  }
+
+
+  function applyBudget(el, amount) {
+    document.querySelectorAll('.budget-tag').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('cost').value = amount;
+    updateCostPreview();
+    showToast('Budget preset applied: €' + amount.toLocaleString());
+  }
+
+ 
+  function previewImage(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      if (!file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
+      document.getElementById('preview').src = URL.createObjectURL(file);
+      document.getElementById('preview-wrap').style.display = 'block';
+      document.getElementById('dropLabel').textContent = file.name;
+    }
+  }
+
+ 
+  function removeImage() {
+    document.getElementById('trip_image').value = '';
+    document.getElementById('preview').src = '';
+    document.getElementById('preview-wrap').style.display = 'none';
+    document.getElementById('dropLabel').textContent = 'Click or drag an image here';
+    showToast('Photo removed.');
+  }
+
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.add('drag-over');
+  }
+
+  function handleDragLeave() {
+    document.getElementById('dropZone').classList.remove('drag-over');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      document.getElementById('preview').src = URL.createObjectURL(file);
+      document.getElementById('preview-wrap').style.display = 'block';
+      document.getElementById('dropLabel').textContent = file.name;
+    } else {
+      showToast('Only image files are allowed.');
+    }
+  }
+
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+    document.getElementById("tripForm").addEventListener("submit", function (e) {
+  const name = document.getElementById("trip_name").value.trim();
+  const btn = document.getElementById("submitBtn");
+
+  if (name.length < 3) {
+    e.preventDefault();
+    document.getElementById("nameError").classList.add("show");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
+});
+    
+   
+</script>
+
+</body>
+</html>
