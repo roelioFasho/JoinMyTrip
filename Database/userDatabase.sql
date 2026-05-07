@@ -3,8 +3,5 @@ CREATE TABLE Users (
     name VARCHAR(100) NOT NULL,
     age INT,
     email VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    
-    
-
+    password VARCHAR(255) NOT NULL
 );
