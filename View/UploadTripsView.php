@@ -380,7 +380,7 @@ $conn->close();
 
     .submit-btn:hover { background: #0F6E56; }
     .submit-btn:active { transform: scale(0.99); }
-    .submit-btn:disabled { background: #9FE1CB; cursor: not-allowed; }
+    .submit-btn:disabled { background: #9ce1ca; cursor: not-allowed; }
 
 
     .toast {
