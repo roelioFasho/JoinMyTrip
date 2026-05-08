@@ -1,14 +1,10 @@
 <?php
-    
-$conn = new mysqli("localhost", "root", "1234", "projekti");
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . "/../Database/tripsDB.php";
 
-$message= "";
+$message = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
     $trip_name   = $_POST["trip_name"];
     $departure   = $_POST["departure"];
@@ -21,43 +17,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $imageName = null;
 
     if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] == 0) {
+
         $folder = "uploads/";
+
         if (!is_dir($folder)) {
             mkdir($folder);
         }
 
         $imageName = time() . "_" . basename($_FILES["trip_image"]["name"]);
-        move_uploaded_file($_FILES["trip_image"]["tmp_name"], $folder . $imageName);
+
+        move_uploaded_file(
+            $_FILES["trip_image"]["tmp_name"],
+            $folder . $imageName
+        );
     }
 
-    $stmt = $conn->prepare("
-        INSERT INTO Trips
-        (trip_name, departure, return_date, destination, itinerary, cost, category, image)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ");
+    try {
 
-    $stmt->bind_param(
-        "sssssdss",
-        $trip_name,
-        $departure,
-        $return_date,
-        $destination,
-        $itinerary,
-        $cost,
-        $category,
-        $imageName
-    );
+        $stmt = $conn->prepare("
+            INSERT INTO Trips
+            (trip_name, departure, return_date, destination, itinerary, cost, category, image)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
 
-    if ($stmt->execute()) {
+        $stmt->execute([
+            $trip_name,
+            $departure,
+            $return_date,
+            $destination,
+            $itinerary,
+            $cost,
+            $category,
+            $imageName
+        ]);
+
         $message = "Trip added successfully!";
-    } else {
-        $message = "Error: " . $stmt->error;
+
+    } catch (PDOException $e) {
+
+        $message = "Error: " . $e->getMessage();
     }
-
-    $stmt->close();
 }
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
