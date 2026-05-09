@@ -1,8 +1,8 @@
 <?php
 
-require_once "Model/tripModel.php";
-require_once "Database/tripsDB.php";
-require_once "Database/TripRepository.php";
+require_once __DIR__ . "/../Model/tripModel.php";
+require_once __DIR__ . "/../Database/tripsDB.php";
+require_once __DIR__ . "/../Database/TripRepository.php";
 
 class TripController {
 

@@ -1,20 +1,21 @@
 <?php
-require_once "Model/chatModel.php";
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once __DIR__ . "/../Model/chatModel.php";
 
 class ChatController {
 
     public function showChats($userId) {
 
-    $chats = TripChat::getUserChats($userId);
+        $chats = TripChat::getUserChats($userId);
 
-    if (!$chats) {
-        $chats = [];
+        if (!$chats) {
+            $chats = [];
+        }
+
+        include __DIR__ . "/../View/ChatList.php";
     }
-
-    include "View/ChatList.php";
-}
-
-
 
     public function openChat($chatId) {
 
@@ -26,7 +27,7 @@ class ChatController {
             $messages = [];
         }
 
-        include "View/ChatView.php";
+        include __DIR__ . "/../View/ChatView.php";
     }
 
     public function sendMessage($chatId, $userId, $message) {
@@ -39,3 +40,7 @@ class ChatController {
         exit;
     }
 }
+
+$controller = new ChatController();
+
+$controller->showChats(1);

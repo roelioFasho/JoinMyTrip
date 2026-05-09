@@ -1,5 +1,5 @@
 <?php
-require_once "Database/tripsDB.php";
+require_once __DIR__ . "/../Database/tripsDB.php";
 
 class TripChat {
 
@@ -79,8 +79,9 @@ class TripChat {
     }
 
     public static function getUserChats($userId) {
+        global $conn;
 
-    require "Database/tripsDB.php";
+    require_once __DIR__ . "/../Database/tripsDB.php";
 
     $stmt = $conn->prepare("
         SELECT tc.*
