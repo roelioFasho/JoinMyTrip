@@ -1,4 +1,5 @@
 <?php
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -19,9 +20,9 @@ class ChatController {
 
     public function openChat($chatId) {
 
-        $chats = new TripChat(['id' => $chatId]);
+        $chat = new TripChat(['id' => $chatId]);
 
-        $messages = $chats->getMessages();
+        $messages = $chat->getMessages();
 
         if (!$messages) {
             $messages = [];
@@ -32,15 +33,12 @@ class ChatController {
 
     public function sendMessage($chatId, $userId, $message) {
 
-        $chats = new TripChat(['id' => $chatId]);
+        $chat = new TripChat(['id' => $chatId]);
 
-        $chats->sendMessage($userId, $message);
+        $chat->sendMessage($userId, $message);
 
         header("Location: index.php?chatId=" . $chatId);
         exit;
     }
 }
-
-$controller = new ChatController();
-
-$controller->showChats(1);
+?>
