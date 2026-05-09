@@ -125,7 +125,7 @@ if (isset($_GET["error"])) {
 </div>
 <div class="register-text">
     Don't have an account?
-    <a href="Register.php">Register</a>
+    <a href="View/RegisterView.php">Register</a>
 </div>
 
 </body>

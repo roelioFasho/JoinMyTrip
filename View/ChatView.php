@@ -18,7 +18,7 @@ html, body {
     color: white;
 }
 
-/* HEADER (like WhatsApp / IG DM top bar) */
+
 .chat-header {
     display: flex;
     align-items: center;
@@ -42,7 +42,7 @@ html, body {
     font-size: 16px;
 }
 
-/* CHAT AREA */
+
 .chat-container {
     padding: 15px;
     display: flex;
@@ -53,7 +53,7 @@ html, body {
     overflow-y: auto;
 }
 
-/* MESSAGE BUBBLES */
+
 .message {
     max-width: 70%;
     padding: 10px 14px;
@@ -63,14 +63,14 @@ html, body {
     line-height: 1.4;
 }
 
-/* OTHER USER (left like WhatsApp) */
+
 .other {
     background: rgba(255,255,255,0.1);
     align-self: flex-start;
     border-top-left-radius: 5px;
 }
 
-/* YOU (right side like Instagram DM) */
+
 .me {
     background: #0095f6;
     color: white;
@@ -78,7 +78,7 @@ html, body {
     border-top-right-radius: 5px;
 }
 
-/* INPUT BAR (modern fixed bottom bar) */
+
 .message-form {
     position: fixed;
     bottom: 0;
@@ -133,7 +133,7 @@ html, body {
 
 <?php foreach ($messages as $msg): ?>
 
-    <!-- IMPORTANT: you should later switch between "me" and "other" dynamically -->
+   
     <div class="message other">
         <b><?= htmlspecialchars($msg['name']) ?></b><br>
         <?= htmlspecialchars($msg['message']) ?>
