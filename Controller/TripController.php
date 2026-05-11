@@ -1,41 +1,66 @@
 <?php
-require_once "../Model/tripModel.php";
-require_once "../Database/db.php";
-require_once "../Database/TripRepository.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+require_once __DIR__ . "/../Model/tripModel.php";
+require_once __DIR__ . "/../Database/tripsDB.php";
+require_once __DIR__ . "/../Database/TripRepository.php";
 
-    $imagePath = null;
+class TripController {
 
-    if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] === 0) {
-        $uploadDir = "../uploads/";
+    private $repo;
 
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        $fileName = time() . "_" . basename($_FILES["trip_image"]["name"]);
-        $imagePath = "uploads/" . $fileName;
-
-        move_uploaded_file($_FILES["trip_image"]["tmp_name"], $uploadDir . $fileName);
+    public function __construct($conn)
+    {
+        $this->repo = new TripRepository($conn);
     }
 
-    $trip = new Trip(
-        null,
-        $_POST['trip_name'] ?? '',
-        $_POST['departure'] ?? null,
-        $_POST['return_date'] ?? null,
-        $_POST['destination'] ?? '',
-        $_POST['itinerary'] ?? '',
-        $_POST['cost'] ?? 0,
-        $_POST['category'] ?? '',
-        $imagePath
-    );
+    
+    public function showUploadTrips($userId)
+    {
+        require_once __DIR__ . "/../View/UploadTripsView.php";
+    }
 
-    $repo = new TripRepository($conn);
-    $repo->insertTrip($trip);
+    
+    public function uploadTrip()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    header("Location: ../View/UploadTripsView.php");
-    exit();
+            $imagePath = null;
+
+            if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] === 0) {
+
+                $uploadDir = "../uploads/";
+
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $fileName = time() . "_" . basename($_FILES["trip_image"]["name"]);
+
+                $imagePath = "uploads/" . $fileName;
+
+                move_uploaded_file(
+                    $_FILES["trip_image"]["tmp_name"],
+                    $uploadDir . $fileName
+                );
+            }
+
+            $trip = new Trip(
+                null,
+                $_POST['trip_name'] ?? '',
+                $_POST['departure'] ?? null,
+                $_POST['return_date'] ?? null,
+                $_POST['destination'] ?? '',
+                $_POST['itinerary'] ?? '',
+                $_POST['cost'] ?? 0,
+                $_POST['category'] ?? '',
+                $imagePath
+            );
+
+            $this->repo->insertTrip($trip);
+
+            header("Location: ../View/UploadTrips.php");
+            exit();
+        }
+    }
 }
 ?>

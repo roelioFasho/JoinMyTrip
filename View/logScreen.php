@@ -84,6 +84,23 @@ if (isset($_GET["error"])) {
             text-align: center;
             color: #ff4d4d;
         }
+        .register-text {
+    margin-top: 20px;
+    text-align: center;
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.register-text a {
+    color: #00aaff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.register-text a:hover {
+    text-decoration: underline;
+}
     </style>
 </head>
 <body>
@@ -93,8 +110,8 @@ if (isset($_GET["error"])) {
 
     
     <form method="POST" action="../Controller/AuthController.php">
-        <label>Username</label>
-        <input type="text" name="username">
+        <label>Email</label>
+<input type="email" name="email">
 
         <label>Password</label>
         <input type="password" name="password">
@@ -105,6 +122,10 @@ if (isset($_GET["error"])) {
     <?php if ($message): ?>
         <div class="message"><?php echo $message; ?></div>
     <?php endif; ?>
+</div>
+<div class="register-text">
+    Don't have an account?
+    <a href="View/RegisterView.php">Register</a>
 </div>
 
 </body>

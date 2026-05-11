@@ -1,16 +1,40 @@
 <?php
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+require_once __DIR__ . "/../Database/tripsDB.php";
 
-    $username = $_POST["username"];
+if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $email = $_POST["email"];
     $password = $_POST["password"];
 
-    if ($username === "admin" && $password === "1234") {
-        $_SESSION["user"] = $username;
+    if (empty($email) || empty($password)) {
+
+        header("Location: ../View/logScreen.php?error=empty");
+        exit();
+    }
+
+    $stmt = $conn->prepare("
+        SELECT * FROM Users
+        WHERE email = ?
+    ");
+
+    $stmt->execute([$email]);
+
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && $password == $user["password"]) {
+
+        $_SESSION["user_id"] = $user["user_id"];
+        $_SESSION["name"] = $user["name"];
+
         header("Location: ../index.php");
+        exit();
+
     } else {
-        header("Location: ../View/login.php?error=invalid");
+
+        header("Location: ../View/logScreen.php?error=invalid");
+        exit();
     }
 }
 ?>
