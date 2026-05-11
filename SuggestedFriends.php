@@ -15,7 +15,7 @@ $addedStmt = $conn->prepare(
     "SELECT friend_id FROM friends WHERE user_id = :user_id"
 );
 $addedStmt->execute(['user_id' => $currentUserID]);
-$addedFriends = $addedStmt->fetchAll(PDO::FETCH_COLUMN);
+$addedFriends = $addedStmt->fetchAll(PDO::FETCH_COLUMN); 
 
 $stmt = $conn->prepare(
     "SELECT user_id, name, age FROM Users WHERE user_id != :id LIMIT 10"
