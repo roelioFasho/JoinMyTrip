@@ -1,4 +1,4 @@
 <?php
-$conn = new PDO("mysql:host=localhost;dbname=joinmytrip", "root", "");
+$conn = new PDO("mysql:host=localhost;dbname=projekti", "root", "1234");
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 ?>
