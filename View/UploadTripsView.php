@@ -4,24 +4,24 @@ require_once __DIR__ . "/../Database/tripsDB.php";
 
 $message = "";
 
-if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $trip_name   = $_POST["trip_name"];
-    $departure   = $_POST["departure"];
-    $return_date = $_POST["return_date"];
-    $destination = $_POST["destination"];
-    $itinerary   = $_POST["itinerary"];
-    $cost        = $_POST["cost"];
-    $category    = $_POST["category"];
+    $trip_name   = $_POST["trip_name"] ?? "";
+    $departure   = $_POST["departure"] ?? null;
+    $return_date = $_POST["return_date"] ?? null;
+    $destination = $_POST["destination"] ?? "";
+    $itinerary   = $_POST["itinerary"] ?? "";
+    $cost        = $_POST["cost"] ?? 0;
+    $category    = $_POST["category"] ?? "";
 
     $imageName = null;
 
-    if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] == 0) {
+    if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] === 0) {
 
-        $folder = "uploads/";
+        $folder = __DIR__ . "/uploads/";
 
         if (!is_dir($folder)) {
-            mkdir($folder);
+            mkdir($folder, 0777, true);
         }
 
         $imageName = time() . "_" . basename($_FILES["trip_image"]["name"]);
@@ -33,7 +33,6 @@ if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
-
         $stmt = $conn->prepare("
             INSERT INTO Trips
             (trip_name, departure, return_date, destination, itinerary, cost, category, image)
@@ -54,7 +53,6 @@ if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Trip added successfully!";
 
     } catch (PDOException $e) {
-
         $message = "Error: " . $e->getMessage();
     }
 }
@@ -515,7 +513,7 @@ if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <div id="preview-wrap">
       <img id="preview" alt="Trip preview">
-      <button class="preview-remove" onclick="removeImage()" title="Remove">✕</button>
+      <button type="button" class="preview-remove" onclick="removeImage()" title="Remove">✕</button>
     </div>
   </div>
    <button class="submit-btn" id="submitBtn" type="submit">
