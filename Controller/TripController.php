@@ -58,7 +58,7 @@ class TripController {
 
             $this->repo->insertTrip($trip);
 
-            header("Location: ../View/UploadTrips.php");
+            header("Location: ../View/UploadTripsView.php");
             exit();
         }
     }
