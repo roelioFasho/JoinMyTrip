@@ -1,5 +1,6 @@
 <?php
 $chats = $chats ?? [];
+
 ?>
 
 <!DOCTYPE html>
