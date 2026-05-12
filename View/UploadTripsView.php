@@ -1,62 +1,3 @@
-<?php
-
-require_once __DIR__ . "/../Database/tripsDB.php";
-
-$message = "";
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $trip_name   = $_POST["trip_name"] ?? "";
-    $departure   = $_POST["departure"] ?? null;
-    $return_date = $_POST["return_date"] ?? null;
-    $destination = $_POST["destination"] ?? "";
-    $itinerary   = $_POST["itinerary"] ?? "";
-    $cost        = $_POST["cost"] ?? 0;
-    $category    = $_POST["category"] ?? "";
-
-    $imageName = null;
-
-    if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] === 0) {
-
-        $folder = __DIR__ . "/uploads/";
-
-        if (!is_dir($folder)) {
-            mkdir($folder, 0777, true);
-        }
-
-        $imageName = time() . "_" . basename($_FILES["trip_image"]["name"]);
-
-        move_uploaded_file(
-            $_FILES["trip_image"]["tmp_name"],
-            $folder . $imageName
-        );
-    }
-
-    try {
-        $stmt = $conn->prepare("
-            INSERT INTO Trips
-            (trip_name, departure, return_date, destination, itinerary, cost, category, image)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-
-        $stmt->execute([
-            $trip_name,
-            $departure,
-            $return_date,
-            $destination,
-            $itinerary,
-            $cost,
-            $category,
-            $imageName
-        ]);
-
-        $message = "Trip added successfully!";
-
-    } catch (PDOException $e) {
-        $message = "Error: " . $e->getMessage();
-    }
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -416,7 +357,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
 <?php if (!empty($message)) echo "<p style='text-align:center; color:green;'>$message</p>"; ?>
-<form id="tripForm" method="POST" enctype="multipart/form-data">
+<form id="tripForm" action="../Controller/uploadtrip.php" method="POST" enctype="multipart/form-data">
 <div class="card">
   <div class="card-header">
     <div class="icon-plane">✈</div>
@@ -671,17 +612,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   }
 
   function handleDrop(e) {
-    e.preventDefault();
-    document.getElementById('dropZone').classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      document.getElementById('preview').src = URL.createObjectURL(file);
-      document.getElementById('preview-wrap').style.display = 'block';
-      document.getElementById('dropLabel').textContent = file.name;
-    } else {
-      showToast('Only image files are allowed.');
-    }
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+
+  const file = e.dataTransfer.files[0];
+
+  if (file && file.type.startsWith('image/')) {
+    document.getElementById('trip_image').files = e.dataTransfer.files;
+    document.getElementById('preview').src = URL.createObjectURL(file);
+    document.getElementById('preview-wrap').style.display = 'block';
+    document.getElementById('dropLabel').textContent = file.name;
+  } else {
+    showToast('Only image files are allowed.');
   }
+}
 
 
   function showToast(msg) {
