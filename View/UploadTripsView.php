@@ -14,14 +14,22 @@
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
-  background: linear-gradient(180deg, #02070c 0%, #001a2d 55%, #002b4a 100%);
+
+  background:
+    linear-gradient(180deg, #02070c 0%, #001a2d 55%, #002b4a 100%),
+    url("https://cdn.mos.cms.futurecdn.net/v2/t:0,l:350,cw:2100,ch:1575,q:80,w:2100/xcLR5HMU2kxskdAy3ZVuTf.jpg"); 
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  background-blend-mode: overlay; 
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
-  color: white;
 }
 
 .card {
@@ -218,7 +226,7 @@ textarea {
 
 .scroll-plane-wrap {
     position: fixed;
-    right: 10%;
+    left: 8%;
     top: 0;
     height: 100vh;
     width: 100px;
