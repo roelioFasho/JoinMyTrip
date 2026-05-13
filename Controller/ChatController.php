@@ -9,14 +9,30 @@ class ChatController {
 
     public function showChats($userId) {
 
-        $chats = TripChat::getUserChats($userId);
+    $chats = TripChat::getUserChats($userId);
 
-        if (!$chats) {
-            $chats = [];
-        }
-
-        include __DIR__ . "/../View/ChatList.php";
+    if (!$chats) {
+        $chats = [];
     }
+
+    // enrich each chat with last message + sender info
+    foreach ($chats as &$chat) {
+
+        $lastMessage = TripChat::getLastMessage($chat['id']);
+
+        if ($lastMessage) {
+            $chat['last_message'] = $lastMessage['message'];
+            $chat['last_sender_id'] = $lastMessage['user_id'];
+            $chat['last_sender_name'] = $lastMessage['name'];
+        } else {
+            $chat['last_message'] = null;
+            $chat['last_sender_id'] = null;
+            $chat['last_sender_name'] = null;
+        }
+    }
+
+    include __DIR__ . "/../View/ChatList.php";
+}
 
     public function openChat($chatId) {
 
