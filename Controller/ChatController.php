@@ -15,7 +15,7 @@ class ChatController {
         $chats = [];
     }
 
-    // enrich each chat with last message + sender info
+    
     foreach ($chats as &$chat) {
 
         $lastMessage = TripChat::getLastMessage($chat['id']);

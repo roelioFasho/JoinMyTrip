@@ -6,11 +6,25 @@
     <style>
 
         body {
-            margin: 0;
-            background-color: black;
-            font-family: Arial, sans-serif;
-            color: white;
-        }
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background:
+        radial-gradient(circle at top left, rgba(0,140,255,0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,90,255,0.15), transparent 25%),
+        linear-gradient(
+            180deg,
+            #02070c 0%,
+            #001a2d 30%,
+            #002b4a 65%,
+            #00457a 100%
+        );
+
+    background-attachment: fixed;
+
+    color: white;
+}
 
         .profile-container {
             max-width: 1000px;
@@ -19,13 +33,31 @@
         }
 
         .profile-header {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid #1d1d1d;
-        }
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 35px;
+
+    padding: 35px;
+
+    border-radius: 24px;
+
+    background: rgba(10,10,15,0.82);
+
+    border: 1px solid rgba(45,168,255,0.12);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.35),
+        0 0 25px rgba(45,168,255,0.05);
+
+    margin-top: 30px;
+}
 
         .profile-picture {
             width: 140px;
@@ -78,39 +110,146 @@
         }
 
         .edit-btn {
-            position: absolute;
 
-            top: 0;
-            right: 0;
+    position: absolute;
 
-            width: 42px;
-            height: 42px;
+    top: 0;
+    right: 0;
 
-            border-radius: 10px;
+    width: 50px;
+    height: 50px;
 
-            background-color: #111111;
+    border-radius: 14px;
 
-            border: 1px solid #1d1d1d;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,20,25,0.95),
+            rgba(10,10,15,0.95)
+        );
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    border: 1px solid rgba(45,168,255,0.15);
 
-            cursor: pointer;
+    color: white;
 
-            transition: 0.2s;
-        }
+    text-decoration: none;
 
-        .edit-btn:hover {
-            background-color: #001f3f;
-            border-color: #2da8ff;
-        }
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-        .edit-btn img {
-            width: 20px;
-            height: 20px;
-        }
+    font-size: 22px;
 
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.3);
+}
+
+.edit-btn:hover {
+
+    background:
+        linear-gradient(
+            145deg,
+            #003b66,
+            #0066b3
+        );
+
+    border-color: #2da8ff;
+
+    transform:
+        translateY(-5px)
+        scale(1.08);
+
+    box-shadow:
+        0 10px 25px rgba(45,168,255,0.35),
+        0 0 20px rgba(45,168,255,0.25);
+}
+        .top-buttons {
+    position: absolute;
+    top: 0;
+    right: 60px;
+
+    display: flex;
+    gap: 12px;
+}
+
+.top-btn {
+
+    width: 50px;
+    height: 50px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,20,25,0.95),
+            rgba(10,10,15,0.95)
+        );
+
+    border: 1px solid rgba(45,168,255,0.15);
+
+    color: white;
+
+    text-decoration: none;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 22px;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.3);
+}
+
+.top-btn:hover {
+
+    background:
+        linear-gradient(
+            145deg,
+            #003b66,
+            #0066b3
+        );
+
+    border-color: #2da8ff;
+
+    transform:
+        translateY(-5px)
+        scale(1.08);
+
+    box-shadow:
+        0 10px 25px rgba(45,168,255,0.35),
+        0 0 20px rgba(45,168,255,0.25);
+}
+
+.top-btn:hover {
+
+    background-color: #001f3f;
+
+    border-color: #2da8ff;
+}
+
+.top-btn img {
+
+    width: 20px;
+    height: 20px;
+}
         .profile-tabs {
             display: flex;
             gap: 15px;
@@ -119,19 +258,41 @@
             margin-bottom: 30px;
         }
 
-        .tab {
-            padding: 12px 22px;
+       .tab {
 
-            background-color: #101010;
+    padding: 14px 24px;
 
-            border: 1px solid #1d1d1d;
+    background: rgba(15,15,20,0.82);
 
-            border-radius: 10px;
+    border: 1px solid rgba(45,168,255,0.12);
 
-            cursor: pointer;
+    border-radius: 14px;
 
-            transition: 0.2s;
-        }
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.tab:hover {
+
+    background:
+        linear-gradient(
+            145deg,
+            #003b66,
+            #005fa3
+        );
+
+    border-color: #2da8ff;
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 20px rgba(45,168,255,0.2);
+}
 
         .tab:hover {
             background-color: #001f3f;
@@ -147,18 +308,38 @@
         }
 
         .post {
-            height: 250px;
 
-            background-color: #0d0d0d;
+    height: 250px;
 
-            border: 1px solid #1d1d1d;
+    background: rgba(10,10,15,0.9);
 
-            border-radius: 15px;
+    border: 1px solid rgba(45,168,255,0.12);
 
-            overflow: hidden;
+    border-radius: 20px;
 
-            transition: 0.2s;
-        }
+    overflow: hidden;
+
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.3);
+}
+
+.post:hover {
+
+    transform:
+        translateY(-8px)
+        scale(1.02);
+
+    border-color: #2da8ff;
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,0.45),
+        0 0 35px rgba(45,168,255,0.18);
+}
 
         .post:hover {
             transform: translateY(-4px);
@@ -216,9 +397,18 @@
 
             </div>
 
-            <div class="edit-btn">
-                <img src="/Views/edit.png">
-            </div>
+            <div class="top-buttons">
+
+    <a href="index.php" class="top-btn">⌂</a>
+
+    <div class="top-btn">🔔</div>
+
+    <a href="index.php?chats=1" class="top-btn">✉</a>
+    <a href="../Controller/LogoutController.php" class="top-btn">⎋</a>
+
+</div>
+
+<a href="View/UploadTripsView.php" class="edit-btn">✎</a>
 
         </div>
 

@@ -28,7 +28,7 @@ class TripController {
 
             if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] === 0) {
 
-                $uploadDir = "../uploads/";
+                $uploadDir = __DIR__ . "/../uploads/";
 
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
@@ -36,7 +36,7 @@ class TripController {
 
                 $fileName = time() . "_" . basename($_FILES["trip_image"]["name"]);
 
-                $imagePath = "uploads/" . $fileName;
+                $imagePath = $fileName;
 
                 move_uploaded_file(
                     $_FILES["trip_image"]["tmp_name"],
@@ -58,7 +58,7 @@ class TripController {
 
             $this->repo->insertTrip($trip);
 
-            header("Location: ../View/UploadTripsView.php");
+            header("Location: ../index.php");
             exit();
         }
     }

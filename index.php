@@ -1,6 +1,6 @@
 <?php
 session_start();
-session_destroy();
+
 require_once __DIR__ . "/Database/tripsDB.php";
 
 require_once __DIR__ . "/Controller/TripController.php";
@@ -30,10 +30,19 @@ if (!isset($_SESSION['user_id'])) {
         $chatController = new ChatController($conn);
         $chatController->showChats($userId);
 
-    } else {
+    } elseif (isset($_GET['upload'])) {
 
-        $userController = new UserController($conn);
-        $userController->showProfile($userId);
+        require_once __DIR__ . "/View/UploadTripsView.php";
+
+    }
+    elseif (isset($_GET['trip'])) {
+
+    require_once __DIR__ . "/View/TripDetails.php";
+
+} 
+    else {
+
+        require_once __DIR__ . "/View/Home.php";
     }
 }
 ?>

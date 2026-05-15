@@ -23,21 +23,109 @@ html, body {
 }
 
 
-.header {
-    padding: 18px;
+.topbar {
 
-    font-size: 24px;
-    font-weight: bold;
+    height: 80px;
 
-    background: rgba(0,0,0,0.85);
+    background: rgba(0, 0, 0, 0.72);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
 
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(45,168,255,0.2);
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0 35px;
 
     position: sticky;
+
     top: 0;
+
     z-index: 100;
+
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.35),
+        0 0 20px rgba(45,168,255,0.08);
+}
+
+.header-title {
+
+    font-size: 26px;
+
+    font-weight: bold;
+
+    color: #2da8ff;
+
+    letter-spacing: 0.5px;
+}
+
+.top-buttons {
+
+    display: flex;
+
+    gap: 18px;
+}
+
+.top-btn {
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,20,25,0.95),
+            rgba(10,10,15,0.95)
+        );
+
+    border: 1px solid rgba(45,168,255,0.15);
+
+    color: white;
+
+    text-decoration: none;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 22px;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.3);
+}
+
+.top-btn:hover {
+
+    background:
+        linear-gradient(
+            145deg,
+            #003b66,
+            #0066b3
+        );
+
+    border-color: #2da8ff;
+
+    transform:
+        translateY(-5px)
+        scale(1.08);
+
+    box-shadow:
+        0 10px 25px rgba(45,168,255,0.35),
+        0 0 20px rgba(45,168,255,0.25);
 }
 
 
@@ -219,8 +307,26 @@ html, body {
 
 <body>
 
-<div class="header">
-    Chats
+<div class="topbar">
+
+    <div class="header-title">
+        Chats
+    </div>
+
+    <div class="top-buttons">
+
+        <a href="index.php" class="top-btn">⌂</a>
+
+        <a href="index.php?profile=1" class="top-btn">👤</a>
+
+        <a href="#" class="top-btn">🔔</a>
+
+        <a href="index.php?upload=1" class="top-btn">✎</a>
+
+        <a href="Controller/LogoutController.php" class="top-btn">⎋</a>
+
+    </div>
+
 </div>
 
 <div class="chat-list">
