@@ -13,50 +13,75 @@ class UserController {
     }
 
     public function showProfile($userId)
-{
-    global $conn;
-
-    $stmt = $conn->prepare("
-        SELECT * FROM Users
-        WHERE user_id = ?
-    ");
-
-    $stmt->execute([$userId]);
-
-    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    $user = new User($userData);
-
-    $stmt = $conn->prepare("
-        SELECT * FROM Trips
-        WHERE user_id = ?
-        ORDER BY trip_id DESC
-    ");
-
-    $stmt->execute([$userId]);
-
-    $userTrips = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    require_once __DIR__ . "/../View/userView.php";
-}
-
-    public function updateProfile($userId)
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["change_name"])) {
 
-            $user = new User([
-                "user_id" => $userId,
-                "name" => $_POST["name"] ?? "",
-                "age" => $_POST["age"] ?? null,
-                "email" => $_POST["email"] ?? "",
-                "password" => $_POST["password"] ?? ""
-            ]);
+            $newName = trim($_POST["name"]);
 
-            $this->repo->updateUser($user);
+            if (!empty($newName)) {
+                $this->repo->updateUserName($userId, $newName);
+            }
 
-            header("Location: ../index.php?profile=1");
-            exit();
+            header("Location: index.php?profile=1");
+            exit;
         }
+
+        if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["change_profile_picture"])) {
+
+            if (isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["error"] === 0) {
+
+                $uploadDir = __DIR__ . "/../uploads/";
+
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $fileName = time() . "_" . basename($_FILES["profile_picture"]["name"]);
+                $targetPath = $uploadDir . $fileName;
+
+                $tmp = $_FILES["profile_picture"]["tmp_name"];
+
+                $image = imagecreatefromstring(file_get_contents($tmp));
+
+                if ($image === false) {
+                    move_uploaded_file($tmp, $targetPath);
+                } else {
+                    $w = imagesx($image);
+                    $h = imagesy($image);
+
+                    $size = min($w, $h);
+
+                    $x = (int)(($w - $size) / 2);
+                    $y = (int)(($h - $size) / 2);
+
+                    $cropped = imagecrop($image, [
+                        'x' => $x,
+                        'y' => $y,
+                        'width' => $size,
+                        'height' => $size
+                    ]);
+
+                    if ($cropped === false) {
+                        move_uploaded_file($tmp, $targetPath);
+                    } else {
+                        imagejpeg($cropped, $targetPath, 90);
+                        imagedestroy($cropped);
+                    }
+
+                    imagedestroy($image);
+                }
+
+                $this->repo->updateProfilePicture($userId, $fileName);
+
+                header("Location: index.php?profile=1");
+                exit;
+            }
+        }
+
+        $user = $this->repo->getUserById($userId);
+        $userTrips = $this->repo->getTripsByUserId($userId);
+
+        require_once __DIR__ . "/../View/userView.php";
     }
 }
 

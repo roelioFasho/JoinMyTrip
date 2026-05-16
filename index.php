@@ -30,19 +30,16 @@ if (!isset($_SESSION['user_id'])) {
         $chatController = new ChatController($conn);
         $chatController->showChats($userId);
 
-    } elseif (isset($_GET['upload'])) {
+    } elseif (isset($_GET['uploadTrip'])) {
 
-        require_once __DIR__ . "/View/UploadTripsView.php";
+        $tripController = new TripController($conn);
+        $tripController->showUploadTrips($userId);
 
-    }
-    elseif (isset($_GET['trip'])) {
+    } else {
 
-    require_once __DIR__ . "/View/TripDetails.php";
-
-} 
-    else {
-
-        require_once __DIR__ . "/View/Home.php";
+        $userController = new UserController($conn);
+        $userController->showProfile($userId);
     }
 }
+
 ?>

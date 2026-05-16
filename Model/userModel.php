@@ -5,6 +5,7 @@ class User {
     private $age;
     private $email;
     private $password;
+    private $profilePicture;
 
     public function __construct($data = []) {
         $this->userId = $data['user_id'] ?? $data['id'] ?? null;
@@ -12,6 +13,7 @@ class User {
         $this->age = $data['age'] ?? null;
         $this->email = $data['email'] ?? '';
         $this->password = $data['password'] ?? '';
+        $this->profilePicture = $data['profile_picture'] ?? 'user.png';
     }
 
     public function getId() {
@@ -52,5 +54,13 @@ class User {
 
     public function setPassword($password) {
         $this->password = $password;
+    }
+
+    public function getProfilePicture() {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture($profilePicture) {
+        $this->profilePicture = $profilePicture;
     }
 }?>
