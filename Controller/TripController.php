@@ -21,46 +21,72 @@ class TripController {
 
     
     public function uploadTrip()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
-            $imagePath = null;
+    global $conn;
 
-            if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] === 0) {
+    $userId = $_SESSION["user_id"] ?? null;
 
-                $uploadDir = __DIR__ . "/../uploads/";
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
+        $imagePath = null;
 
-                $fileName = time() . "_" . basename($_FILES["trip_image"]["name"]);
+        if (isset($_FILES["trip_image"]) && $_FILES["trip_image"]["error"] === 0) {
 
-                $imagePath = $fileName;
+            $uploadDir = __DIR__ . "/../uploads/";
 
-                move_uploaded_file(
-                    $_FILES["trip_image"]["tmp_name"],
-                    $uploadDir . $fileName
-                );
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
             }
 
-            $trip = new Trip(
-                null,
-                $_POST['trip_name'] ?? '',
-                $_POST['departure'] ?? null,
-                $_POST['return_date'] ?? null,
-                $_POST['destination'] ?? '',
-                $_POST['itinerary'] ?? '',
-                $_POST['cost'] ?? 0,
-                $_POST['category'] ?? '',
-                $imagePath
+            $fileName = time() . "_" . basename($_FILES["trip_image"]["name"]);
+            $imagePath = $fileName;
+
+            move_uploaded_file(
+                $_FILES["trip_image"]["tmp_name"],
+                $uploadDir . $fileName
             );
-
-            $this->repo->insertTrip($trip);
-
-            header("Location: ../index.php");
-            exit();
         }
+
+        $trip = new Trip(
+            null,
+            $_POST['trip_name'] ?? '',
+            $_POST['departure'] ?? null,
+            $_POST['return_date'] ?? null,
+            $_POST['destination'] ?? '',
+            $_POST['itinerary'] ?? '',
+            $_POST['cost'] ?? 0,
+            $_POST['category'] ?? '',
+            $imagePath
+        );
+
+        $tripId = $this->repo->insertTrip($trip);
+
+        $stmt = $conn->prepare("
+            INSERT INTO trip_chats (trip_id, name)
+            VALUES (?, ?)
+        ");
+
+        $stmt->execute([
+            $tripId,
+            $_POST['trip_name'] . " Chat"
+        ]);
+
+        $chatId = $conn->lastInsertId();
+
+        $stmt = $conn->prepare("
+            INSERT INTO trip_chat_members (chat_id, user_id)
+            VALUES (?, ?)
+        ");
+
+        $stmt->execute([$chatId, $userId]);
+
+        header("Location: ../index.php");
+        exit();
     }
+}
 }
 ?>

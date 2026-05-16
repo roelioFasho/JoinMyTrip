@@ -351,7 +351,71 @@
             height: 100%;
             object-fit: cover;
         }
+        
+        .post {
+    position: relative;
+    height: 250px;
+    border-radius: 18px;
+    overflow: hidden;
+}
 
+.post img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-overlay {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    padding: 18px;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,0.9),
+            rgba(0,0,0,0.15),
+            transparent
+        );
+}
+
+.post-title {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    color: white;
+
+    margin-bottom: 6px;
+}
+
+.post-location {
+
+    color: #d6d6d6;
+
+    font-size: 14px;
+
+    margin-bottom: 8px;
+}
+
+.post-price {
+
+    color: #2da8ff;
+
+    font-weight: bold;
+
+    font-size: 18px;
+}
+.post-link {
+    text-decoration: none;
+    color: inherit;
+}
     </style>
 </head>
 
@@ -424,9 +488,44 @@
 
         <div class="posts-grid">
 
+<?php foreach ($userTrips as $trip): ?>
+    <a
+    href="index.php?trip=<?php echo $trip['trip_id']; ?>"
+    class="post-link"
+>
 
+    <div class="post">
+
+        <?php if (!empty($trip["image"])): ?>
+
+            <img
+                src="uploads/<?php echo htmlspecialchars($trip["image"]); ?>"
+                alt="Trip image"
+            >
+
+        <?php endif; ?>
+
+        <div class="post-overlay">
+
+            <div class="post-title">
+                <?php echo htmlspecialchars($trip["trip_name"]); ?>
+            </div>
+
+            <div class="post-location">
+                📍 <?php echo htmlspecialchars($trip["destination"]); ?>
+            </div>
+
+            <div class="post-price">
+                €<?php echo htmlspecialchars($trip["cost"]); ?>
+            </div>
 
         </div>
+
+    </div></a>
+
+<?php endforeach; ?>
+
+</div>
 
     </div>
 

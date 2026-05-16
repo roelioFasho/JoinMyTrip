@@ -13,11 +13,32 @@ class UserController {
     }
 
     public function showProfile($userId)
-    {
-        $user = $this->repo->getUserById($userId);
+{
+    global $conn;
 
-        require_once __DIR__ . "/../View/userView.php";
-    }
+    $stmt = $conn->prepare("
+        SELECT * FROM Users
+        WHERE user_id = ?
+    ");
+
+    $stmt->execute([$userId]);
+
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $user = new User($userData);
+
+    $stmt = $conn->prepare("
+        SELECT * FROM Trips
+        WHERE user_id = ?
+        ORDER BY trip_id DESC
+    ");
+
+    $stmt->execute([$userId]);
+
+    $userTrips = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    require_once __DIR__ . "/../View/userView.php";
+}
 
     public function updateProfile($userId)
     {
