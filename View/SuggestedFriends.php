@@ -33,8 +33,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .container{
-            max-width: 700px;
-            margin: 0 auto;
+             max-width: 700px;
+    margin: 0 auto;
+
+    position: relative;
         }
 
         h1{
@@ -124,6 +126,75 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 3rem;
             color: #666;
         }
+        .top-buttons {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    display: flex;
+
+    gap: 18px;
+}
+
+.top-btn {
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,20,25,0.95),
+            rgba(10,10,15,0.95)
+        );
+
+    border: 1px solid rgba(45,168,255,0.15);
+
+    color: white;
+
+    text-decoration: none;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 22px;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.3);
+}
+
+.top-btn:hover {
+
+    background:
+        linear-gradient(
+            145deg,
+            #003b66,
+            #0066b3
+        );
+
+    border-color: #2da8ff;
+
+    transform:
+        translateY(-5px)
+        scale(1.08);
+
+    box-shadow:
+        0 10px 25px rgba(45,168,255,0.35),
+        0 0 20px rgba(45,168,255,0.25);
+}
     </style>
 </head>
 <body>
@@ -132,6 +203,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <h1>Suggested <span>Friends</span></h1>
     <p class="subtitle">People you may know</p>
+    <div class="top-buttons">
+
+<a href="../index.php" class="top-btn">⌂</a>
+<a href="../index.php?chats=1" class="top-btn">✉</a>
+<a href="../index.php?profile=1" class="top-btn">👤</a>
+<a href="#" class="top-btn">🔔</a>
+<a href="../index.php?uploadTrip=1" class="top-btn">+</a>
+<a href="../Controller/LogoutController.php" class="top-btn">⎋</a>
+
+    </div>
 
     <?php if($users): ?>
 

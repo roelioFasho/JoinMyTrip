@@ -314,16 +314,12 @@ html, body {
     </div>
 
     <div class="top-buttons">
-
-        <a href="index.php" class="top-btn">⌂</a>
-
-        <a href="index.php?profile=1" class="top-btn">👤</a>
-
-        <a href="#" class="top-btn">🔔</a>
-
-        <a href="index.php?upload=1" class="top-btn">✎</a>
-
-        <a href="Controller/LogoutController.php" class="top-btn">⎋</a>
+<a href="../index.php" class="top-btn">⌂</a>
+<a href="../index.php?profile=1" class="top-btn">👤</a>
+<a href="#" class="top-btn">🔔</a>
+<a href="../index.php?friends=1" class="top-btn">👥</a>
+<a href="../index.php?uploadTrip=1" class="top-btn">+</a>
+<a href="../Controller/LogoutController.php" class="top-btn">⎋</a>
 
     </div>
 

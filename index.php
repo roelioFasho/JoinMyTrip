@@ -35,11 +35,14 @@ if (!isset($_SESSION['user_id'])) {
         $tripController = new TripController($conn);
         $tripController->showUploadTrips($userId);
 
-    } else {
-
-        $userController = new UserController($conn);
-        $userController->showProfile($userId);
     }
+    elseif (isset($_GET['friends'])) {
+    require_once __DIR__ . "/View/SuggestedFriends.php";
+} 
+    else {
+
+    require_once __DIR__ . "/View/Home.php";
+}
 }
 
 ?>

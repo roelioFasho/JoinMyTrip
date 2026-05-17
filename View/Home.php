@@ -282,11 +282,12 @@ $trips = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
 
 <div class="topbar">
-    <a href="index.php?profile=1" class="top-btn">👤</a>
-    <a href="index.php?chats=1" class="top-btn">✉</a>
-    <a href="#" class="top-btn">🔔</a>
-    <a href="View/UploadTripsView.php" class="top-btn">✎</a>
-    <a href="Controller/LogoutController.php" class="top-btn">⎋</a>
+<a href="../index.php?profile=1" class="top-btn">👤</a>
+<a href="../index.php?chats=1" class="top-btn">✉</a>
+<a href="#" class="top-btn">🔔</a>
+<a href="../index.php?friends=1" class="top-btn">👥</a>
+<a href="../index.php?uploadTrip=1" class="top-btn">+</a>
+<a href="../Controller/LogoutController.php" class="top-btn">⎋</a>
 </div>
 
 <div class="page">
