@@ -798,42 +798,10 @@
     <div class="tab">Friends</div>
 
     <div class="tab">Joined Trips</div>
-    
-    <div class="friends-list">
-    <h2>Friends</h2>
-
-    <?php if (!empty($friends)): ?>
-        <?php foreach ($friends as $friend): ?>
-            <div class="friend-card">
-                <?php echo htmlspecialchars($friend["name"]); ?>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>No friends yet.</p>
-    <?php endif; ?>
-</div>
 
 </div>
 
-<script>
-
-    const tabs = document.querySelectorAll(".tab");
-
-    tabs.forEach(tab => {
-
-        tab.addEventListener("click", () => {
-
-            tabs.forEach(t => t.classList.remove("active"));
-
-            tab.classList.add("active");
-
-        });
-
-    });
-
-</script>
-
-        <div class="posts-grid">
+        <div id="postsSection" class="posts-grid">
 
 <?php foreach ($userTrips as $trip): ?>
     <a
@@ -873,8 +841,24 @@
 <?php endforeach; ?>
 
 </div>
+</div>
+<div id="friendsSection" class="friends-list" style="display:none;">
+    <h2>Friends</h2>
 
-    </div>
+    <?php if (!empty($friends)): ?>
+        <?php foreach ($friends as $friend): ?>
+            <div class="friend-card">
+                <?php echo htmlspecialchars($friend["name"]); ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No friends yet.</p>
+    <?php endif; ?>
+</div>
+
+<div id="joinedSection" style="display:none;">
+    <p>No joined trips yet.</p>
+</div>
 
 </body>
 <script>
@@ -941,7 +925,30 @@ createDescriptionPlaceholder();
 
 }
 );
+const tabs = document.querySelectorAll(".tab");
 
+const postsSection = document.getElementById("postsSection");
+const friendsSection = document.getElementById("friendsSection");
+const joinedSection = document.getElementById("joinedSection");
+
+tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => {
+
+      
+        tabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+       
+        postsSection.style.display = "none";
+        friendsSection.style.display = "none";
+        joinedSection.style.display = "none";
+
+        
+        if (index === 0) postsSection.style.display = "grid";
+        if (index === 1) friendsSection.style.display = "block";
+        if (index === 2) joinedSection.style.display = "block";
+    });
+});
 </script>
 
 <script>
