@@ -150,6 +150,16 @@ $notificationRepo->createNotification(
         $chatId = $chat["id"];
 
         $stmt = $this->conn->prepare("
+    INSERT IGNORE INTO trip_chat_members (chat_id, user_id)
+    VALUES (?, ?)
+");
+
+$stmt->execute([
+    $chatId,
+    $userId
+]);
+
+        $stmt = $this->conn->prepare("
             INSERT IGNORE INTO trip_chat_members (chat_id, user_id)
             VALUES (?, ?)
         ");
