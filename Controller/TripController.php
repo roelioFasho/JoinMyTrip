@@ -3,6 +3,7 @@
 require_once __DIR__ . "/../Model/tripModel.php";
 require_once __DIR__ . "/../Database/tripsDB.php";
 require_once __DIR__ . "/../Database/TripRepository.php";
+require_once __DIR__ . "/../Database/NotificationRepository.php";
 
 class TripController {
 
@@ -66,7 +67,7 @@ class TripController {
                 $userId
             );
 
-            $tripId = $this->repo->insertTrip($trip);
+        $tripId = $this->repo->insertTrip($trip);
 
             if (!$tripId) {
                 die("Trip was not created.");
