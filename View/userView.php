@@ -522,7 +522,25 @@
 
     background: #2da8ff;
 }
+.friends-list {
+    margin-top: 25px;
+    background: rgba(10,10,15,0.75);
+    border: 1px solid rgba(45,168,255,0.12);
+    border-radius: 20px;
+    padding: 20px;
+}
 
+.friends-list h2 {
+    color: #2da8ff;
+    margin-bottom: 15px;
+}
+
+.friend-card {
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    margin-bottom: 10px;
+}
 
 
         .posts-grid {
@@ -737,9 +755,11 @@
         </div>
 
         <div class="stat-box">
-            <div class="stat-number">0</div>
-            <div class="stat-label">Friends</div>
-        </div>
+    <div class="stat-number">
+        <?php echo !empty($friends) ? count($friends) : 0; ?>
+    </div>
+    <div class="stat-label">Friends</div>
+</div>
 
         <div class="stat-box">
             <div class="stat-number">
@@ -760,7 +780,7 @@
 
 <a href="../index.php" class="top-btn">⌂</a>
 <a href="../index.php?chats=1" class="top-btn">✉</a>
-<a href="#" class="top-btn">🔔</a>
+<a href="index.php?notifications=1" class="top-btn">🔔</a>
 <a href="../index.php?friends=1" class="top-btn">👥</a>
 <a href="../index.php?uploadTrip=1" class="top-btn">+</a>
 <a href="../Controller/LogoutController.php" class="top-btn">⎋</a>
@@ -778,6 +798,20 @@
     <div class="tab">Friends</div>
 
     <div class="tab">Joined Trips</div>
+    
+    <div class="friends-list">
+    <h2>Friends</h2>
+
+    <?php if (!empty($friends)): ?>
+        <?php foreach ($friends as $friend): ?>
+            <div class="friend-card">
+                <?php echo htmlspecialchars($friend["name"]); ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No friends yet.</p>
+    <?php endif; ?>
+</div>
 
 </div>
 

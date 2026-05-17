@@ -67,11 +67,20 @@ class TripController {
                 $userId
             );
 
-        $tripId = $this->repo->insertTrip($trip);
+      $tripId = $this->repo->insertTrip($trip);
 
-            if (!$tripId) {
-                die("Trip was not created.");
-            }
+      if (!$tripId) {
+        die("Trip was not created.");
+      }
+
+$notificationRepo = new NotificationRepository($this->conn);
+
+$notificationRepo->createNotification(
+    $userId,
+    "new_trip",
+    "Your trip was created successfully!",
+    $tripId
+);
 
             $stmt = $this->conn->prepare("
                 INSERT IGNORE INTO trip_chats (trip_id, name)

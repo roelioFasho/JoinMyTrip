@@ -1,6 +1,14 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require __DIR__ . '/../Database/tripsDB.php';
 
+if (!isset($_SESSION['user_id'])) {
+    header("Location: logScreen.php");
+    exit();
+}
 
 $currentUserId = $_SESSION['user_id'];
 
@@ -214,7 +222,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <a href="../index.php" class="top-btn">⌂</a>
 <a href="../index.php?profile=1" class="top-btn">👤</a>
 <a href="../index.php?chats=1" class="top-btn">✉</a>
-<a href="#" class="top-btn">🔔</a>
+<a href="index.php?notifications=1" class="top-btn">🔔</a>
 <a href="../index.php?uploadTrip=1" class="top-btn">+</a>
 <a href="../Controller/LogoutController.php" class="top-btn">⎋</a>
 
@@ -236,9 +244,11 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <p><?= htmlspecialchars($user['email']) ?></p>
                 </div>
 
-                <button class="btn-add">
-                    + Add Friend
-                </button>
+             <form action="../Controller/FriendController.php" method="POST">
+             <input type="hidden" name="action" value="add_friend">
+             <input type="hidden" name="receiver_id" value="<?php echo $user['user_id']; ?>">
+             <button class="btn-add" type="submit"> + Add Friend</button>
+             </form>
 
             </div>
 

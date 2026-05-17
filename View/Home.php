@@ -1,9 +1,16 @@
 <?php
 require_once __DIR__ . "/../Database/tripsDB.php";
+require_once __DIR__ . "/../Database/NotificationRepository.php";
 
 $stmt = $conn->prepare("SELECT * FROM Trips ORDER BY trip_id DESC");
 $stmt->execute();
 $trips = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$notificationRepo = new NotificationRepository($conn);
+
+$userId = $_SESSION["user_id"];
+
+$unreadCount = $notificationRepo->countUnread($userId);
 ?>
 
 <!DOCTYPE html>
@@ -119,6 +126,29 @@ $trips = $stmt->fetchAll(PDO::FETCH_ASSOC);
         0 0 20px rgba(45,168,255,0.25);
 }
 
+.bell-btn {
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+
+    background: red;
+    color: white;
+
+    font-size: 11px;
+    font-weight: bold;
+
+    padding: 2px 6px;
+    border-radius: 50%;
+
+    min-width: 18px;
+    text-align: center;
+
+    box-shadow: 0 0 6px rgba(255,0,0,0.6);
+}
         .page {
             max-width: 1100px;
             margin: auto;
@@ -284,7 +314,15 @@ $trips = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="topbar">
 <a href="../index.php?profile=1" class="top-btn">👤</a>
 <a href="../index.php?chats=1" class="top-btn">✉</a>
-<a href="#" class="top-btn">🔔</a>
+<a href="index.php?notifications=1" class="top-btn bell-btn">
+    🔔
+
+    <?php if ($unreadCount > 0): ?>
+        <span class="badge">
+            <?php echo $unreadCount > 9 ? "9+" : $unreadCount; ?>
+        </span>
+    <?php endif; ?>
+</a>
 <a href="../index.php?friends=1" class="top-btn">👥</a>
 <a href="../index.php?uploadTrip=1" class="top-btn">+</a>
 <a href="../Controller/LogoutController.php" class="top-btn">⎋</a>

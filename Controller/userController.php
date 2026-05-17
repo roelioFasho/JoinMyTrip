@@ -6,12 +6,13 @@ require_once __DIR__ . "/../Database/UserRepository.php";
 class UserController {
 
     private $repo;
+private $conn;
 
-    public function __construct($conn)
-    {
-        $this->repo = new UserRepository($conn);
-    }
-
+public function __construct($conn)
+{
+    $this->conn = $conn;
+    $this->repo = new UserRepository($conn);
+}
     public function showProfile($userId)
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["change_name"])) {
@@ -78,10 +79,23 @@ class UserController {
             }
         }
 
-        $user = $this->repo->getUserById($userId);
-        $userTrips = $this->repo->getTripsByUserId($userId);
+       $user = $this->repo->getUserById($userId);
+$userTrips = $this->repo->getTripsByUserId($userId);
 
-        require_once __DIR__ . "/../View/userView.php";
+$stmt = $this->conn->prepare("
+    SELECT u.user_id, u.name
+    FROM friends f
+    JOIN Users u 
+        ON (u.user_id = f.user1_id OR u.user_id = f.user2_id)
+    WHERE (f.user1_id = ? OR f.user2_id = ?)
+    AND u.user_id != ?
+");
+
+$stmt->execute([$userId, $userId, $userId]);
+
+$friends = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+require_once __DIR__ . "/../View/userView.php";
     }
 }
 

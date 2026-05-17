@@ -50,6 +50,11 @@ elseif (isset($_GET['joinTrip'])) {
     $tripController->joinTrip($_GET['joinTrip'], $userId);
 
 }
+elseif (isset($_GET['notifications'])) {
+
+    require_once __DIR__ . "/View/NotificationView.php";
+
+}
     else {
 
     require_once __DIR__ . "/View/Home.php";
