@@ -1,16 +1,18 @@
 <?php
+
 require_once __DIR__ . "/../Database/tripsDB.php";
 
 class TripChat {
 
     private $conn;
     private $TripChatId;
-    private $tripId;   
+    private $tripId;
     private $name;
-    private $members;   
+    private $members;
 
     public function __construct($data = []) {
         global $conn;
+
         $this->conn = $conn;
 
         $this->TripChatId = $data['id'] ?? null;
@@ -19,16 +21,27 @@ class TripChat {
         $this->members = $data['members'] ?? [];
     }
 
-    public function getId() { return $this->TripChatId; }
-    public function getTripId() { return $this->tripId; }
-    public function getName() { return $this->name; }
-    public function getMembers() { return $this->members; }
+    public function getId() {
+        return $this->TripChatId;
+    }
+
+    public function getTripId() {
+        return $this->tripId;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getMembers() {
+        return $this->members;
+    }
 
     public function loadMembers() {
 
         $stmt = $this->conn->prepare("
-            SELECT user_id 
-            FROM trip_chat_members 
+            SELECT user_id
+            FROM trip_chat_members
             WHERE chat_id = ?
         ");
 
@@ -44,9 +57,12 @@ class TripChat {
             VALUES (?, ?)
         ");
 
-        $stmt->execute([$this->TripChatId, $userId]);
+        $stmt->execute([
+            $this->TripChatId,
+            $userId
+        ]);
 
-        $this->members[] = $userId;
+        $this->loadMembers();
     }
 
     public function removeMember($userId) {
@@ -56,20 +72,26 @@ class TripChat {
             WHERE chat_id = ? AND user_id = ?
         ");
 
-        $stmt->execute([$this->TripChatId, $userId]);
+        $stmt->execute([
+            $this->TripChatId,
+            $userId
+        ]);
 
-        $this->members = array_filter(
-            $this->members,
-            fn($m) => $m != $userId
-        );
+        $this->loadMembers();
     }
 
     public function getMessages() {
 
         $stmt = $this->conn->prepare("
-            SELECT m.message, u.name
+            SELECT
+                m.id,
+                m.message,
+                m.user_id,
+                m.created_at,
+                u.name
             FROM messages m
-            JOIN users u ON m.user_id = u.user_id
+            JOIN Users u
+                ON m.user_id = u.user_id
             WHERE m.chat_id = ?
             ORDER BY m.created_at ASC
         ");
@@ -86,7 +108,11 @@ class TripChat {
             VALUES (?, ?, ?)
         ");
 
-        $stmt->execute([$this->TripChatId, $userId, $message]);
+        $stmt->execute([
+            $this->TripChatId,
+            $userId,
+            $message
+        ]);
     }
 
     public static function getUserChats($userId) {
@@ -94,10 +120,15 @@ class TripChat {
         global $conn;
 
         $stmt = $conn->prepare("
-            SELECT tc.*
+            SELECT DISTINCT
+                tc.id,
+                tc.trip_id,
+                tc.name
             FROM trip_chats tc
-            JOIN trip_chat_members tm ON tc.id = tm.chat_id
-            WHERE tm.user_id = ?
+            INNER JOIN trip_chat_members tcm
+                ON tc.id = tcm.chat_id
+            WHERE tcm.user_id = ?
+            ORDER BY tc.id DESC
         ");
 
         $stmt->execute([$userId]);
@@ -113,9 +144,11 @@ class TripChat {
             SELECT
                 m.message,
                 m.user_id,
+                DATE_FORMAT(m.created_at, '%H:%i') AS time,
                 u.name
             FROM messages m
-            JOIN users u ON u.user_id = m.user_id
+            JOIN Users u
+                ON u.user_id = m.user_id
             WHERE m.chat_id = ?
             ORDER BY m.created_at DESC
             LIMIT 1
@@ -126,3 +159,4 @@ class TripChat {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
+?>

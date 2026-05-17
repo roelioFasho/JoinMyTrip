@@ -71,6 +71,66 @@ $trip = $stmt->fetch(PDO::FETCH_ASSOC);
             margin-top: 20px;
             font-weight: bold;
         }
+        .join-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    float: right;
+
+    margin-top: 25px;
+
+    padding: 14px 24px;
+
+    border-radius: 14px;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    font-size: 15px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            145deg,
+            #005fa3,
+            #008cff
+        );
+
+    border: 1px solid rgba(45,168,255,0.35);
+
+    box-shadow:
+        0 8px 20px rgba(0,140,255,0.25),
+        0 0 20px rgba(45,168,255,0.15);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.join-btn:hover {
+
+    transform:
+        translateY(-4px)
+        scale(1.04);
+
+    background:
+        linear-gradient(
+            145deg,
+            #008cff,
+            #00aaff
+        );
+
+    box-shadow:
+        0 14px 28px rgba(0,140,255,0.35),
+        0 0 30px rgba(45,168,255,0.28);
+}
 
     </style>
 </head>
@@ -128,6 +188,9 @@ $trip = $stmt->fetch(PDO::FETCH_ASSOC);
     <div class="price">
         €<?php echo htmlspecialchars($trip["cost"]); ?>
     </div>
+    <a class="join-btn" href="index.php?joinTrip=<?php echo $trip['trip_id']; ?>">
+    Join Trip Chat
+</a>
 
 </div>
 

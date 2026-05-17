@@ -1,11 +1,17 @@
 <?php
 require __DIR__ . '/../Database/tripsDB.php';
 
-$stmt = $conn->query("
+
+$currentUserId = $_SESSION['user_id'];
+
+$stmt = $conn->prepare("
     SELECT user_id, name, age, email
     FROM Users
+    WHERE user_id != ?
     ORDER BY user_id DESC
 ");
+
+$stmt->execute([$currentUserId]);
 
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -206,8 +212,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="top-buttons">
 
 <a href="../index.php" class="top-btn">⌂</a>
-<a href="../index.php?chats=1" class="top-btn">✉</a>
 <a href="../index.php?profile=1" class="top-btn">👤</a>
+<a href="../index.php?chats=1" class="top-btn">✉</a>
 <a href="#" class="top-btn">🔔</a>
 <a href="../index.php?uploadTrip=1" class="top-btn">+</a>
 <a href="../Controller/LogoutController.php" class="top-btn">⎋</a>

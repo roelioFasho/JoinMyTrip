@@ -39,6 +39,17 @@ if (!isset($_SESSION['user_id'])) {
     elseif (isset($_GET['friends'])) {
     require_once __DIR__ . "/View/SuggestedFriends.php";
 } 
+elseif (isset($_GET['trip'])) {
+
+    require_once __DIR__ . "/View/TripDetails.php";
+
+}
+elseif (isset($_GET['joinTrip'])) {
+
+    $tripController = new TripController($conn);
+    $tripController->joinTrip($_GET['joinTrip'], $userId);
+
+}
     else {
 
     require_once __DIR__ . "/View/Home.php";

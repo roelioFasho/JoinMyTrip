@@ -9,30 +9,33 @@ class ChatController {
 
     public function showChats($userId) {
 
-    $chats = TripChat::getUserChats($userId);
+        $chats = TripChat::getUserChats($userId);
 
-    if (!$chats) {
-        $chats = [];
-    }
-
-    
-    foreach ($chats as &$chat) {
-
-        $lastMessage = TripChat::getLastMessage($chat['id']);
-
-        if ($lastMessage) {
-            $chat['last_message'] = $lastMessage['message'];
-            $chat['last_sender_id'] = $lastMessage['user_id'];
-            $chat['last_sender_name'] = $lastMessage['name'];
-        } else {
-            $chat['last_message'] = null;
-            $chat['last_sender_id'] = null;
-            $chat['last_sender_name'] = null;
+        if (!$chats) {
+            $chats = [];
         }
-    }
 
-    include __DIR__ . "/../View/ChatList.php";
-}
+        foreach ($chats as &$chat) {
+
+            $lastMessage = TripChat::getLastMessage($chat['id']);
+
+            if ($lastMessage) {
+                $chat['last_message'] = $lastMessage['message'];
+                $chat['last_sender_id'] = $lastMessage['user_id'];
+                $chat['last_sender_name'] = $lastMessage['name'];
+                $chat['time'] = $lastMessage['time'] ?? '';
+            } else {
+                $chat['last_message'] = null;
+                $chat['last_sender_id'] = null;
+                $chat['last_sender_name'] = null;
+                $chat['time'] = '';
+            }
+        }
+
+        unset($chat);
+
+        require_once __DIR__ . "/../View/ChatList.php";
+    }
 
     public function openChat($chatId) {
 
@@ -44,7 +47,7 @@ class ChatController {
             $messages = [];
         }
 
-        include __DIR__ . "/../View/ChatView.php";
+        require_once __DIR__ . "/../View/ChatView.php";
     }
 
     public function sendMessage($chatId, $userId, $message) {
@@ -54,7 +57,7 @@ class ChatController {
         $chat->sendMessage($userId, $message);
 
         header("Location: index.php?chatId=" . $chatId);
-        exit;
+        exit();
     }
 }
 ?>
